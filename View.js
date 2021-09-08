@@ -1,27 +1,44 @@
 show();
 function show() {
+   init();
+}
+
+
+function init() {
+    
     let svgInnerHtml = '';
-    for (let i = 0; i < numbers.length; i++) {
-        svgInnerHtml += createBar(numbers[i], i + 1);
+
+    for (let tall = 0; tall < numbers.length; tall++) {
+        svgInnerHtml += createBar(numbers[tall], tall + 1);
     }
     contentDiv.innerHTML = `
     
-        <svg onclick="trykk()" id="chart" width="500" viewBox="0 0 80 60">
-            ${svgInnerHtml}
+        <svg  id="chart" width="500" viewBox="0 0 80 60">
+        
+        ${svgInnerHtml}
+        
         </svg><br/>
-        <i>Valgt stolpe:</i> <i>ingen</i>
+        
+        <i>Valgt stolpe:</i> <i id="chosenBarnumber">${chosenBar}</i>
         <br />
         <i>Verdi:</i>
-        <input type="number" id="tall" min="1" max="10" oninput="inputValue = this.value" />
+        <input type="number" id="tall" min="0" max="10" oninput="inputValue = this.value" />
         <hr />
+        
         <button class="btn" onclick="addBar()">Legg til stolpe</button>
         
-        <button class="btn" onclick="changeBar()">Endre valgt stolpe</button>
+        <button class="btn" id="changeBtn" ${disabled ? "disabled" : ""} onclick="changeBar()">Endre valgt stolpe</button>
         
-        <button class="btn" onclick="deleteBar()">Fjerne valgt stolpe</button><br />
+        <button class="btn" id="removeBtn" ${disabled ? "disabled" : ""} onclick="deleteBar()">Fjerne valgt stolpe</button><br />
+
         <br />
         `;
+        
 }
+
+
+
+
 
 function createBar(number, barNo) {
     const width = 8;
@@ -30,11 +47,24 @@ function createBar(number, barNo) {
     let height = number * 10;
     let y = 60 - height;
     let color = calcColor(1, 10, barNo);
-    return `<rect width="${width}" height="${height}"
-            x="${x}" y="${y}" fill="${color}"></rect>
-            `;
-}
+    console.log(chosenBar, barNo);
+    let borderStyle = chosenBar == barNo ? 'stroke: black' : '';
+    return `
+    <rect id="rect${barNo}" onclick="select(${barNo})"
 
+        width="${width}" 
+        height="${height}"
+        x="${x}" y="${y}" 
+        fill="${color}"
+       style="${borderStyle}"
+        >
+        
+    </rect>
+            `;
+             
+}
+// stroke="black"
+// stroke-opacity="0"
 function calcColor(min, max, val) {
     var minHue = 240, maxHue = 0;
     var curPercent = (val - min) / (max - min);
@@ -42,25 +72,17 @@ function calcColor(min, max, val) {
     return colString;
 }
 
-function trykk() {
-         
-    alert("!");
-    
-    
-}
-
-function deleteBar() {
-
-}
-
-function changeBar() {
-
-}
-
-function addBar() {}
 
 
-// document.getElementById("tall").oninput = function() 
-// {
-   
-// }
+
+        
+
+// var c = document.getElementById("myCanvas");
+// var ctx = c.getContext("2d");
+// ctx.beginPath();
+// ctx.moveTo(20, 20);
+// ctx.lineTo(20, 100);
+// ctx.lineTo(70, 100);
+// ctx.strokeStyle = "black";
+// ctx.stroke();
+
